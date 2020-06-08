@@ -1,0 +1,26 @@
+version: '3'
+# starts 4 docker containers running minio server instances. Each
+# minio server's web interface will be accessible on the host at port
+# 9001 through 9004.
+services:
+  minio1:
+    image: minio/minio:latest
+    volumes:
+      - ./data:/data
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+      MINIO_PROMETHEUS_AUTH_TYPE: "public"
+    command: server /data
+  log:
+      depends_on: minio1
+      image: prom/prometheus:latest
+      volumes:
+        - ./prom_conf.yml:/etc/prometheus/prometheus.yml
+      command:
+       - '--config.file=/etc/prometheus/prometheus.yml'
+      ports:
+        - '9090:9090'
+      restart: always
