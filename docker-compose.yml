@@ -15,12 +15,13 @@ services:
       MINIO_PROMETHEUS_AUTH_TYPE: "public"
     command: server /data
   log:
-      depends_on: minio1
-      image: prom/prometheus:latest
-      volumes:
-        - ./prom_conf.yml:/etc/prometheus/prometheus.yml
-      command:
-       - '--config.file=/etc/prometheus/prometheus.yml'
-      ports:
-        - '9090:9090'
-      restart: always
+    depends_on: 
+      - minio1
+    image: prom/prometheus:latest
+    volumes:
+      - ./prom_conf.yml:/etc/prometheus/prometheus.yml
+    command:
+     - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - '9090:9090'
+    restart: always
